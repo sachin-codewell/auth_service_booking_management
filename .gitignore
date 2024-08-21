@@ -2,3 +2,5 @@
 /test
 /static
 /.env
+/src/config/config.json
+
