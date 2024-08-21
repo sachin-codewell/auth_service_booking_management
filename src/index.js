@@ -1,14 +1,18 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
-const { serverConfig } = require('./config/index')
+const { serverConfig } = require('./config/index');
+const apiroutes  = require('./routes/index')
 
 const app = express();
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json())
+app.use('/api', apiroutes);
 
 (async function setupAndRunServer() {
-    app.listen(function(err) {
-        if(!err){
-            console.log(`server is running fine on port ${serverConfig.PORT}`);
-            return ;
-        }       
-    });
+    app.listen(serverConfig.PORT,()=>{
+        console.log(`server is running fine on port ${serverConfig.PORT}`);
+    })
 })();
