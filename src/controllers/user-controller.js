@@ -46,7 +46,31 @@ async function signIn(req,res) {
     }
 }
 
+async function isAuthenticated(req,res) {
+    try { 
+        const token = req.headers['access-token']
+       const authenticatedUser = await userService.isAuthenticated(token);
+       return res.status(200).json({
+        success: true,
+        data: authenticatedUser,
+        error: {},
+        message: "Authenticated User"
+       }) 
+    } 
+    catch (error) {
+        console.log('Something went wrong in user controller: isAuthenticated');
+        return res.status(404).json({
+            success: false,
+            data: {},
+            error: error,
+            message: "Unauthorised User"
+        });
+    }
+}
+
+
 module.exports = {
     signUp,
-    signIn
+    signIn,
+    isAuthenticated
 }

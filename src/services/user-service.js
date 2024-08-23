@@ -28,7 +28,6 @@ class UserService {
            user = user?.dataValues;
            if(user) {
                 let checkPassword = this.#validatePassword(userCredential.password, user.password);
-                console.log('checkPassword',checkPassword)
                 if(checkPassword) {
                     const token = this.#createToken({id:user.id, email:user.email});
                     return token;
@@ -50,6 +49,26 @@ class UserService {
 
     }
 
+    async isAuthenticated(token) {
+        try {
+            const validUser = this.#verifyToken(token);
+            console.log(validUser);
+            if(validUser){
+                const user = await this.userRepository.findUserById(validUser.id);
+                if(!user){
+                    throw new Error('this token not belongs to any user');
+                }
+                return {
+                    id: user.id,
+                    email: user.email
+                };    
+            }
+        } 
+        catch (error) {
+            throw error;
+        }
+    }
+
     #validatePassword(plainPassword, encryptedPassword) {
         return bcrypt.compareSync(plainPassword, encryptedPassword);
     }
@@ -60,7 +79,7 @@ class UserService {
             return token;
         } 
         catch (error) {
-            console.log('something went wrong during createion');
+            console.log('something went wrong during token createion');
             throw error
         }
     }
@@ -71,7 +90,7 @@ class UserService {
             return user;
           } 
           catch(err) {
-            console.log('something went wrong during createion');
+            console.log('something went wrong during verify token');
             throw error
           }
     }
