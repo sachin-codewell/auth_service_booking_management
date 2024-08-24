@@ -68,9 +68,31 @@ async function isAuthenticated(req,res) {
     }
 }
 
+async function getUser(req,res) {
+    try { 
+       const userId = req.params.id;
+       const user = await userService.getUserWithRoles(userId);
+       return res.status(201).json({
+        success: true,
+        data: user,
+        error: {},
+        message: "user details fetched successfulyy"
+       }) 
+    } 
+    catch (error) {
+        return res.status(404).json({
+            success: false,
+            data: {},
+            error: error,
+            message: "Error occured during fetching user details"
+        });
+    }
+}
+
 
 module.exports = {
     signUp,
     signIn,
-    isAuthenticated
+    isAuthenticated,
+    getUser
 }

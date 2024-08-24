@@ -69,6 +69,18 @@ class UserService {
         }
     }
 
+    async getUserWithRoles(userId) {
+        try {
+            const user = await this.userRepository.findUserById(userId);
+            const roles = await this.userRepository.getRoles(user);
+            return {...user.dataValues,roles: roles}; 
+        } 
+        catch (error) {
+            console.log('something went wrong in userService: getUserWithRoles');
+            throw error
+        }
+    }
+
     #validatePassword(plainPassword, encryptedPassword) {
         return bcrypt.compareSync(plainPassword, encryptedPassword);
     }
@@ -80,7 +92,7 @@ class UserService {
         } 
         catch (error) {
             console.log('something went wrong during token createion');
-            throw error
+            throw error;
         }
     }
 
